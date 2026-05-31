@@ -1,0 +1,40 @@
+# 環境変数（絶対にコミットしない）
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+.eggs/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker ボリューム（ローカル開発用）
+mosquitto/data/
+mosquitto/log/
+
+# レポート出力ファイル
+*.xlsx
+
+# テスト
+.pytest_cache/
+.coverage
+htmlcov/
+
+first.md

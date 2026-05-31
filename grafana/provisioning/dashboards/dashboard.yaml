@@ -1,0 +1,12 @@
+apiVersion: 1
+
+providers:
+  - name: default
+    orgId: 1
+    folder: ""
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 10
+    options:
+      # grafana/dashboards/ 以下の JSON をダッシュボードとして読み込む
+      path: /var/lib/grafana/dashboards

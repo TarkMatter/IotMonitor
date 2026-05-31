@@ -1,0 +1,243 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {"type": "grafana", "uid": "-- Grafana --"},
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "datasource": {"type": "influxdb", "uid": "influxdb-uid"},
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "thresholds"},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {"color": "blue", "value": null},
+              {"color": "green", "value": 10},
+              {"color": "yellow", "value": 30},
+              {"color": "red", "value": 35}
+            ]
+          },
+          "unit": "celsius"
+        },
+        "overrides": []
+      },
+      "gridPos": {"h": 7, "w": 8, "x": 0, "y": 0},
+      "id": 1,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "10.4.0",
+      "targets": [
+        {
+          "datasource": {"type": "influxdb", "uid": "influxdb-uid"},
+          "query": "from(bucket: \"environment\")\n  |> range(start: -1h)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"environment\")\n  |> filter(fn: (r) => r[\"_field\"] == \"temperature\")\n  |> last()",
+          "refId": "A"
+        }
+      ],
+      "title": "現在の温度",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "influxdb", "uid": "influxdb-uid"},
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "thresholds"},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {"color": "red", "value": null},
+              {"color": "green", "value": 20},
+              {"color": "yellow", "value": 70},
+              {"color": "red", "value": 80}
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {"h": 7, "w": 8, "x": 8, "y": 0},
+      "id": 2,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "10.4.0",
+      "targets": [
+        {
+          "datasource": {"type": "influxdb", "uid": "influxdb-uid"},
+          "query": "from(bucket: \"environment\")\n  |> range(start: -1h)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"environment\")\n  |> filter(fn: (r) => r[\"_field\"] == \"humidity\")\n  |> last()",
+          "refId": "A"
+        }
+      ],
+      "title": "現在の湿度",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "influxdb", "uid": "influxdb-uid"},
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "thresholds"},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {"color": "green", "value": null},
+              {"color": "yellow", "value": 1000},
+              {"color": "orange", "value": 1200},
+              {"color": "red", "value": 1500}
+            ]
+          },
+          "unit": "short",
+          "displayName": "CO₂ (ppm)"
+        },
+        "overrides": []
+      },
+      "gridPos": {"h": 7, "w": 8, "x": 16, "y": 0},
+      "id": 3,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "10.4.0",
+      "targets": [
+        {
+          "datasource": {"type": "influxdb", "uid": "influxdb-uid"},
+          "query": "from(bucket: \"environment\")\n  |> range(start: -1h)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"environment\")\n  |> filter(fn: (r) => r[\"_field\"] == \"co2\")\n  |> last()",
+          "refId": "A"
+        }
+      ],
+      "title": "現在のCO₂濃度",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "influxdb", "uid": "influxdb-uid"},
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "palette-classic"},
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {"legend": false, "tooltip": false, "viz": false},
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {"type": "linear"},
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {"group": "A", "mode": "none"},
+            "thresholdsStyle": {"mode": "off"}
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [{"color": "green", "value": null}]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {"id": "byName", "options": "temperature"},
+            "properties": [
+              {"id": "unit", "value": "celsius"},
+              {"id": "displayName", "value": "温度 (℃)"}
+            ]
+          },
+          {
+            "matcher": {"id": "byName", "options": "humidity"},
+            "properties": [
+              {"id": "unit", "value": "percent"},
+              {"id": "displayName", "value": "湿度 (%)"}
+            ]
+          },
+          {
+            "matcher": {"id": "byName", "options": "co2"},
+            "properties": [
+              {"id": "custom.axisPlacement", "value": "right"},
+              {"id": "unit", "value": "short"},
+              {"id": "displayName", "value": "CO₂ (ppm)"}
+            ]
+          }
+        ]
+      },
+      "gridPos": {"h": 12, "w": 24, "x": 0, "y": 7},
+      "id": 4,
+      "options": {
+        "legend": {
+          "calcs": ["mean", "max", "min"],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {"mode": "multi", "sort": "none"}
+      },
+      "targets": [
+        {
+          "datasource": {"type": "influxdb", "uid": "influxdb-uid"},
+          "query": "from(bucket: \"environment\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"environment\")\n  |> filter(fn: (r) => r[\"_field\"] == \"temperature\" or r[\"_field\"] == \"humidity\" or r[\"_field\"] == \"co2\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> pivot(rowKey:[\"_time\"], columnKey:[\"_field\"], valueColumn:\"_value\")\n  |> yield(name: \"mean\")",
+          "refId": "A"
+        }
+      ],
+      "title": "環境データ推移（過去24時間）",
+      "type": "timeseries"
+    }
+  ],
+  "refresh": "10s",
+  "schemaVersion": 39,
+  "tags": ["iot", "environment"],
+  "templating": {"list": []},
+  "time": {"from": "now-24h", "to": "now"},
+  "timepicker": {},
+  "timezone": "Asia/Tokyo",
+  "title": "環境モニタリング",
+  "uid": "env-monitor-001",
+  "version": 1
+}
