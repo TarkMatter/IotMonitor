@@ -29,6 +29,7 @@ def isolate_env(monkeypatch):
     monkeypatch.setenv("ALERT_HUMIDITY_HIGH","80.0")
     monkeypatch.setenv("ALERT_HUMIDITY_LOW", "20.0")
     monkeypatch.setenv("ALERT_CO2_HIGH",    "1500")
+    monkeypatch.setenv("ALERT_PM25_HIGH",   "35.0")
     monkeypatch.setenv("ALERT_COOLDOWN_MINUTES", "15")
     monkeypatch.setenv("MQTT_BROKER_HOST",  "localhost")
     monkeypatch.setenv("MQTT_BROKER_PORT",  "1883")
@@ -63,11 +64,25 @@ def high_temp_payload():
 
 @pytest.fixture
 def multi_alert_payload():
-    """温度・湿度・CO₂ が全て閾値超過するペイロード。"""
+    """温度・湿度・CO₂・PM2.5 が全て閾値超過するペイロード。"""
     return {
         "device_id":   "test-device",
         "temperature": 36.0,
         "humidity":    85.0,
         "co2":         2000,
         "pressure":    1013.0,
+        "pm25":        40.0,
+    }
+
+
+@pytest.fixture
+def high_pm25_payload():
+    """PM2.5 アラートを発報するペイロード（pm25=40.0）。"""
+    return {
+        "device_id":   "test-device",
+        "temperature": 24.0,
+        "humidity":    55.0,
+        "co2":         600,
+        "pressure":    1013.0,
+        "pm25":        40.0,
     }

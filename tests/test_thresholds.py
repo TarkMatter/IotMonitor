@@ -97,13 +97,48 @@ class TestCo2Threshold:
         assert not any("CO₂" in m for m in result)
 
 
+class TestPm25Threshold:
+    """PM2.5 アラートの境界値テスト。"""
+
+    def test_high_pm25_triggers_alert(self, high_pm25_payload):
+        """PM2.5 が閾値以上のときアラートが出る。"""
+        alerts = check(high_pm25_payload)
+        assert len(alerts) == 1
+        assert "PM2.5" in alerts[0]
+        assert "40.0" in alerts[0]
+
+    def test_pm25_below_threshold_no_alert(self):
+        """PM2.5 が閾値未満のときアラートなし。"""
+        result = check({"temperature": 24.0, "humidity": 50.0, "co2": 600, "pm25": 34.9})
+        assert not any("PM2.5" in m for m in result)
+
+    def test_pm25_exactly_at_threshold_triggers(self, monkeypatch):
+        """閾値ちょうど（>=）はアラートになる。"""
+        monkeypatch.setenv("ALERT_PM25_HIGH", "35.0")
+        from importlib import reload
+        import alerter.thresholds as mod
+        reload(mod)
+        result = mod.check({"temperature": 24.0, "humidity": 50.0, "co2": 600, "pm25": 35.0})
+        assert any("PM2.5" in m for m in result)
+
+    def test_pm25_none_no_alert(self):
+        """PM2.5 が None のとき（センサー未接続）はアラートなし。"""
+        result = check({"temperature": 24.0, "humidity": 50.0, "co2": 600, "pm25": None})
+        assert not any("PM2.5" in m for m in result)
+
+    def test_pm25_missing_no_alert(self):
+        """PM2.5 キー自体がないペイロードはアラートなし（KeyError にならない）。"""
+        result = check({"temperature": 24.0, "humidity": 50.0, "co2": 600})
+        assert not any("PM2.5" in m for m in result)
+
+
 class TestMultipleAlerts:
     """複数閾値が同時に超過した場合の動作テスト。"""
 
-    def test_all_thresholds_exceeded_returns_three_alerts(self, multi_alert_payload):
+    def test_all_thresholds_exceeded_returns_four_alerts(self, multi_alert_payload):
         alerts = check(multi_alert_payload)
-        # 高温・高湿度・CO₂ の 3 件
-        assert len(alerts) == 3
+        # 高温・高湿度・CO₂・PM2.5 の 4 件
+        assert len(alerts) == 4
 
     def test_alert_messages_contain_actual_values(self, multi_alert_payload):
         alerts = check(multi_alert_payload)
@@ -111,3 +146,4 @@ class TestMultipleAlerts:
         assert "36.0" in joined   # 実際の温度値
         assert "85.0" in joined   # 実際の湿度値
         assert "2000" in joined   # 実際の CO₂値
+        assert "40.0" in joined   # 実際の PM2.5値

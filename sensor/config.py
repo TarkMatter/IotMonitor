@@ -34,6 +34,8 @@ class SensorConfig:
     # センサーハードウェア設定
     bme280_i2c_address: int = 0x76    # 0x77 の場合は要変更
     mhz19_uart_port: str = "/dev/ttyS0"
+    # SDS011 は MH-Z19B と別の UART ポートに接続する
+    sds011_uart_port: str = os.getenv("SDS011_UART_PORT", "/dev/ttyUSB0")
 
     # 読み取り間隔（要件 F-S-5）
     read_interval_sec: int = int(os.getenv("DEVICE_READ_INTERVAL_SEC", "10"))

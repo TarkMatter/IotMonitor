@@ -23,6 +23,7 @@ class Thresholds:
         humidity_high: 高湿度アラート閾値（%）
         humidity_low:  低湿度アラート閾値（%）
         co2_high:      CO₂濃度アラート閾値（ppm）
+        pm25_high:     PM2.5 濃度アラート閾値（μg/m³）
     """
 
     temp_high:     float = float(os.getenv("ALERT_TEMP_HIGH",     "35.0"))
@@ -30,6 +31,8 @@ class Thresholds:
     humidity_high: float = float(os.getenv("ALERT_HUMIDITY_HIGH", "80.0"))
     humidity_low:  float = float(os.getenv("ALERT_HUMIDITY_LOW",  "20.0"))
     co2_high:      int   = int(os.getenv("ALERT_CO2_HIGH",        "1500"))
+    # 日本環境省の PM2.5 環境基準（24 時間平均値 35μg/m³）を採用
+    pm25_high:     float = float(os.getenv("ALERT_PM25_HIGH",     "35.0"))
 
 
 # モジュールレベルのシングルトン（各サービスから共有して使う）
@@ -86,6 +89,14 @@ def check(payload: dict) -> list[str]:
         alerts.append(
             messages.THRESHOLD_CO2_HIGH.format(
                 value=co2, threshold=thresholds.co2_high
+            )
+        )
+
+    pm25 = payload.get("pm25")
+    if pm25 is not None and pm25 >= thresholds.pm25_high:
+        alerts.append(
+            messages.THRESHOLD_PM25_HIGH.format(
+                value=pm25, threshold=thresholds.pm25_high
             )
         )
 

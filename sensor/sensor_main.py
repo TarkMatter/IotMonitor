@@ -1,8 +1,8 @@
 """
 Raspberry Pi 実機で動かすセンサー読み取りスクリプト。
 
-BME280（I2C）で温度・湿度・気圧を、MH-Z19B（UART）で CO₂濃度を読み取り、
-MQTT ブローカーに publish する。
+BME280（I2C）で温度・湿度・気圧を、MH-Z19B（UART）で CO₂濃度を、
+SDS011（UART）で PM2.5 濃度を読み取り、MQTT ブローカーに publish する。
 
 起動方法（Raspberry Pi 上で）:
     python -m sensor.sensor_main
@@ -74,6 +74,36 @@ def _read_mhz19b() -> int | None:
     return None
 
 
+def _read_sds011() -> float | None:
+    """SDS011 UART センサーから PM2.5 濃度（μg/m³）を読み取る。
+
+    SDS011 は 10 バイトのパケットを送信する。
+    バイト 2・3 が PM2.5（低バイト・高バイト）で値は /10.0 して μg/m³ に変換する。
+    読み取りに失敗した場合は None を返す。
+
+    Returns:
+        PM2.5 濃度（μg/m³、小数点1桁）。読み取り失敗時は None
+
+    Raises:
+        serial.SerialException: シリアルポートが開けない場合（上位で捕捉）
+    """
+    import serial  # pyserial
+
+    try:
+        with serial.Serial(config.sds011_uart_port, baudrate=9600, timeout=2) as ser:
+            # SDS011 は連続測定モードで自動送信するため、ヘッダー 0xAA を探す
+            for _ in range(20):
+                byte = ser.read(1)
+                if byte == b"\xaa":
+                    packet = byte + ser.read(9)
+                    if len(packet) == 10 and packet[1] == 0xC0 and packet[9] == 0xAB:
+                        pm25 = round(((packet[3] << 8) | packet[2]) / 10.0, 1)
+                        return pm25
+    except Exception as e:
+        print(messages.SENSOR_CO2_READ_ERROR.format(error=e))
+    return None
+
+
 def main() -> None:
     """センサー読み取りのメインループ。MQTT 接続後、一定間隔でデータを publish する。
 
@@ -93,6 +123,7 @@ def main() -> None:
         try:
             bme_data = _read_bme280(bus)
             co2      = _read_mhz19b()
+            pm25     = _read_sds011()
 
             payload = {
                 "device_id":   config.device_id,
@@ -101,6 +132,7 @@ def main() -> None:
                 "humidity":    bme_data["humidity"],
                 "pressure":    bme_data["pressure"],
                 "co2":         co2,
+                "pm25":        pm25,
             }
             client.publish(topic, json.dumps(payload))
             print(

@@ -61,6 +61,8 @@ class EnvInfluxClient:
         )
         if payload.get("co2") is not None:
             point = point.field("co2", int(payload["co2"]))
+        if payload.get("pm25") is not None:
+            point = point.field("pm25", float(payload["pm25"]))
 
         self._write_api.write(
             bucket=self._bucket,
@@ -102,6 +104,7 @@ from(bucket: "{self._bucket}")
                 "humidity":    record.values.get("humidity"),
                 "co2":         record.values.get("co2"),
                 "pressure":    record.values.get("pressure"),
+                "pm25":        record.values.get("pm25"),
             }
             for table in tables
             for record in table.records

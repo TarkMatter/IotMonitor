@@ -37,7 +37,8 @@ THRESHOLD_TEMP_HIGH = "🌡️ 高温警告: {value}℃ (閾値: {threshold}℃)
 THRESHOLD_TEMP_LOW = "🌡️ 低温警告: {value}℃ (閾値: {threshold}℃)"
 THRESHOLD_HUMIDITY_HIGH = "💧 高湿度警告: {value}% (閾値: {threshold}%)"
 THRESHOLD_HUMIDITY_LOW = "💧 低湿度警告: {value}% (閾値: {threshold}%)"
-THRESHOLD_CO2_HIGH = "🌬️ CO₂濃度警告: {value}ppm (閾値: {threshold}ppm)"
+THRESHOLD_CO2_HIGH  = "🌬️ CO₂濃度警告: {value}ppm (閾値: {threshold}ppm)"
+THRESHOLD_PM25_HIGH = "🌫️ PM2.5濃度警告: {value}μg/m³ (閾値: {threshold}μg/m³)"
 
 # --- 外部通知 ---
 LINE_SEND_ERROR = "[LINE] 送信失敗: {error}"
