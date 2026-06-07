@@ -65,7 +65,7 @@ class EnvInfluxClient:
         self._write_api.write(
             bucket=self._bucket,
             record=point,
-            write_precision=WritePrecision.SECONDS,
+            write_precision=WritePrecision.S,
         )
 
     def query_recent(self, hours: int = 24, device_id: str | None = None) -> list[dict]:
