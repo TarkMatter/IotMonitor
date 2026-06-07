@@ -8,7 +8,7 @@ Grafana 以外のクライアント（スマートフォンアプリ・外部シ
     uvicorn api.main:app --reload
 """
 
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, Query
@@ -110,4 +110,4 @@ def health_check() -> dict:
     Returns:
         ステータスと現在時刻を含む辞書
     """
-    return {"status": "ok", "time": datetime.utcnow().isoformat()}
+    return {"status": "ok", "time": datetime.now(timezone.utc).isoformat()}
