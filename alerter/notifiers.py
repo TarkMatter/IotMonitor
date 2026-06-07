@@ -1,5 +1,5 @@
 """
-LINE Notify・Slack Webhook への通知送信モジュール。
+LINE Messaging API・Slack Webhook への通知送信モジュール。
 
 送信先は環境変数 NOTIFY_CHANNEL (line | slack | both) で切り替える。
 各関数は非同期（async）で実装し、httpx を使う（要件 F-A-3）。
@@ -13,16 +13,17 @@ from common import messages
 
 load_dotenv()
 
-# LINE Notify API エンドポイント
-_LINE_API_URL = "https://notify-api.line.me/api/notify"
+# LINE Messaging API Push Message エンドポイント
+_LINE_PUSH_URL = "https://api.line.me/v2/bot/message/push"
 # HTTP タイムアウト（秒）
 _REQUEST_TIMEOUT = 5.0
 
 
 async def notify_line(message: str) -> bool:
-    """LINE Notify でメッセージを送信する。
+    """LINE Messaging API の Push Message でメッセージを送信する。
 
-    環境変数 LINE_NOTIFY_TOKEN が未設定の場合は何もせず False を返す。
+    環境変数 LINE_CHANNEL_ACCESS_TOKEN または LINE_USER_ID が未設定の場合は
+    何もせず False を返す。
 
     Args:
         message: 送信するメッセージ本文
@@ -30,15 +31,22 @@ async def notify_line(message: str) -> bool:
     Returns:
         送信成功なら True、失敗・未設定なら False
     """
-    token = os.getenv("LINE_NOTIFY_TOKEN", "")
-    if not token:
+    token   = os.getenv("LINE_CHANNEL_ACCESS_TOKEN", "")
+    user_id = os.getenv("LINE_USER_ID", "")
+    if not token or not user_id:
         return False
     try:
         async with httpx.AsyncClient() as client:
             resp = await client.post(
-                _LINE_API_URL,
-                headers={"Authorization": f"Bearer {token}"},
-                data={"message": f"\n{message}"},
+                _LINE_PUSH_URL,
+                headers={
+                    "Authorization": f"Bearer {token}",
+                    "Content-Type":  "application/json",
+                },
+                json={
+                    "to": user_id,
+                    "messages": [{"type": "text", "text": message}],
+                },
                 timeout=_REQUEST_TIMEOUT,
             )
             return resp.status_code == 200
