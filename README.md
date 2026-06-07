@@ -75,15 +75,19 @@ Grafana 10.4 (Docker: 3000)   FastAPI (8000)
 
 ---
 
-### LINE / Slack アラート通知
+### LINE アラート通知
 
-閾値を超えるとアラートが LINE と Slack に同時送信される（`NOTIFY_CHANNEL=both`）。
+閾値を超えると LINE にプッシュ通知が届く（LINE Messaging API 使用）。
 
-| LINE 通知 | Slack 通知 |
-|---|---|
-| 高温・高湿度・高 CO₂ 検知時にプッシュ通知が届く | 同一メッセージが Slack チャンネルに投稿される |
+![LINE アラート通知](docs/screenshots/line-screenshot.jpg)
 
-> スクリーンショットは実機での通知を想定。トークン設定後に `python -m alerter.main` 起動で確認できる。
+---
+
+### Slack アラート通知
+
+同一メッセージが Slack チャンネルにも投稿される。
+
+![Slack アラート通知](docs/screenshots/slack-screenshot.jpg)
 
 ---
 
