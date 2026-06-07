@@ -1,5 +1,9 @@
 # IotMonitor
 
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+![Python](https://img.shields.io/badge/python-3.11%2B-blue)
+![Tests](https://img.shields.io/badge/tests-87%20passed-brightgreen)
+
 工場・倉庫・クリーンルーム・オフィスにおける **温度・湿度・CO₂・PM2.5** のリアルタイム収集・可視化・アラート通知システム。
 
 センサから取得したデータを MQTT 経由で InfluxDB に蓄積し、Grafana でリアルタイム可視化するとともに、閾値超過時に **LINE / Slack** へ即時通知する。
@@ -333,3 +337,9 @@ pytest
 | Slack 通知 | Incoming Webhook | — |
 | テスト | pytest + pytest-asyncio | 8.0+ |
 | コンテナ | Docker / Docker Compose | — |
+
+---
+
+## ライセンス
+
+[MIT License](LICENSE) © 2026 TarkMatter
